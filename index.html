@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#8b5e34">
+<title>ديوان ناصر الوبير</title>
+
+<style>
+:root{
+  --bg:#f7f4ef;
+  --card:#ffffff;
+  --text:#241f1a;
+  --muted:#7b746d;
+  --main:#8b5e34;
+  --main2:#b9824d;
+  --line:#e9e2d9;
+  --shadow:0 8px 25px rgba(60,40,20,.08);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Tahoma,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:.3s;
+}
+
+button,input{
+  font-family:inherit;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:100;
+  height:64px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:bold;
+  font-size:17px;
+}
+
+.logo{
+  width:40px;
+  height:40px;
+  border-radius:13px;
+  background:var(--main);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  box-shadow:0 5px 15px rgba(139,94,52,.25);
+}
+
+.actions{
+  display:flex;
+  gap:7px;
+}
+
+.icon-btn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:#f5f1ec;
+  color:var(--text);
+  font-size:19px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.2s;
+}
+
+.icon-btn:hover{
+  background:var(--main);
+  color:white;
+}
+
+.container{
+  width:min(100% - 28px,900px);
+  margin:auto;
+}
+
+.hero{
+  margin-top:20px;
+  padding:28px 20px;
+  border-radius:25px;
+  background:linear-gradient(135deg,#8b5e34,#b9824d);
+  color:white;
+  box-shadow:var(--shadow);
+}
+
+.hero h1{
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+.hero p{
+  line-height:1.8;
+  opacity:.9;
+  font-size:14px;
+}
+
+.search{
+  margin-top:22px;
+  position:relative;
+}
+
+.search input{
+  width:100%;
+  border:0;
+  outline:0;
+  background:white;
+  padding:15px 48px 15px 15px;
+  border-radius:15px;
+  font-size:15px;
+  color:#333;
+  box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.search span{
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--main);
+  font-size:20px;
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:28px 2px 14px;
+}
+
+.section-title h2{
+  font-size:20px;
+}
+
+.count{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.poems{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+  padding-bottom:30px;
+}
+
+.poem-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  box-shadow:var(--shadow);
+  transition:.2s;
+}
+
+.poem-card:hover{
+  transform:translateY(-2px);
+}
+
+.poem-number{
+  min-width:42px;
+  height:42px;
+  border-radius:13px;
+  background:#f1e8df;
+  color:var(--main);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+.poem-info{
+  flex:1;
+  min-width:0;
+}
+
+.poem-info h3{
+  font-size:16px;
+  margin-bottom:5px;
+}
+
+.poem-info p{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.open-btn{
+  background:var(--main);
+  color:white;
+  padding:9px 13px;
+  border-radius:11px;
+  font-size:12px;
+}
+
+.empty{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:30px;
+  text-align:center;
+  border-radius:18px;
+  color:var(--muted);
+}
+
+.drawer-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:300;
+  display:none;
+}
+
+.drawer-overlay.show{
+  display:block;
+}
+
+.drawer{
+  position:fixed;
+  right:-310px;
+  top:0;
+  bottom:0;
+  width:290px;
+  background:var(--card);
+  z-index:301;
+  transition:.3s;
+  box-shadow:-10px 0 30px rgba(0,0,0,.12);
+  padding:20px;
+}
+
+.drawer.show{
+  right:0;
+}
+
+.drawer-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:15px;
+}
+
+.drawer-head strong{
+  font-size:19px;
+}
+
+.close{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  background:#f3eee9;
+  font-size:20px;
+}
+
+.menu-item{
+  width:100%;
+  background:transparent;
+  padding:14px;
+  border-radius:13px;
+  text-align:right;
+  color:var(--text);
+  font-size:15px;
+  margin-bottom:5px;
+}
+
+.menu-item:hover{
+  background:#f5eee7;
+  color:var(--main);
+}
+
+.reader{
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  z-index:500;
+  display:none;
+  overflow:auto;
+}
+
+.reader.show{
+  display:block;
+}
+
+.reader-top{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.reader-title{
+  font-weight:bold;
+  font-size:16px;
+}
+
+.reader-actions{
+  display:flex;
+  gap:6px;
+}
+
+.reader-body{
+  width:min(100% - 30px,760px);
+  margin:30px auto;
+}
+
+.reader-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:23px;
+  padding:25px 20px;
+  box-shadow:var(--shadow);
+}
+
+.reader-card h1{
+  font-size:25px;
+  text-align:center;
+  color:var(--main);
+  margin-bottom:25px;
+}
+
+.poem-text{
+  font-size:19px;
+  line-height:2.4;
+  text-align:center;
+  white-space:pre-line;
+}
+
+.reader-tools{
+  margin-top:25px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+}
+
+.tool{
+  background:#f3eee9;
+  color:var(--text);
+  padding:10px 13px;
+  border-radius:12px;
+  font-size:13px;
+}
+
+.tool:hover{
+  background:var(--main);
+  color:white;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+.about-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:22px;
+  margin-top:20px;
+  line-height:2;
+  box-shadow:var(--shadow);
+}
+
+.contact{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:20px;
+}
+
+.contact a{
+  text-decoration:none;
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--line);
+  padding:15px;
+  border-radius:15px;
+}
+
+body.dark{
+  --bg:#151311;
+  --card:#211e1a;
+  --text:#f4eee8;
+  --muted:#aaa098;
+  --line:#38312b;
+  --shadow:0 8px 25px rgba(0,0,0,.25);
+}
+
+body.dark .topbar,
+body.dark .reader-top{
+  background:rgba(33,30,26,.95);
+}
+
+body.dark .icon-btn,
+body.dark .close,
+body.dark .tool{
+  background:#302a25;
+  color:var(--text);
+}
+
+body.dark .menu-item:hover{
+  background:#302a25;
+}
+
+body.dark .poem-number{
+  background:#352c25;
+}
+
+@media(min-width:650px){
+  .poems{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .hero{
+    padding:38px;
+  }
+
+  .hero h1{
+    font-size:34px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo"></div>
+    <span>قصائد ناصر الوبير</span>
+  </div>
+
+  <div class="actions">
+    <button class="icon-btn" onclick="toggleDark()" title="الوضع الليلي">☾</button>
+    <button class="icon-btn" onclick="refreshPoems()" title="تحديث القصائد">↻</button>
+    <button class="icon-btn" onclick="openDrawer()" title="القائمة">☰</button>
+  </div>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
+
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <strong>القائمة</strong>
+    <button class="close" onclick="closeDrawer()">×</button>
+  </div>
+
+  <button class="menu-item" onclick="go('home')">⌂ &nbsp; الرئيسية</button>
+  <button class="menu-item" onclick="go('poems')">☷ &nbsp; عناوين القصائد</button>
+  <button class="menu-item" onclick="go('favorites')">♡ &nbsp; المفضلة</button>
+  <button class="menu-item" onclick="go('about')">ⓘ &nbsp; معلومات عن المنشئ</button>
+  <button class="menu-item" onclick="go('contact')">✉ &nbsp; تواصل مع المطور</button>
+  <button class="menu-item" onclick="go('diwan')">📖 &nbsp; عن ناصر الوبير</button>
+</aside>
+
+<main class="container">
+
+  <!-- الرئيسية -->
+  <section id="home" class="page active">
+
+     <center>   
+    <div class="hero">
+<h1>قصائد ناصر الوبير </h1>
+      <p>
+        
+
+مجموعة من قصائد الشاعر ناصر الوبير
+</p>
+<p>
+..برمجة وإعداد المبرمج حاتم القلعة..
+</center>
+
+      </p>
+
+      <div class="search">
+        <span>⌕</span>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="ابحث عن قصيدة أو بيت..."
+          oninput="searchPoems()"
+        >
+      </div>
+    </div>
+
+    <div class="section-title">
+      <h2>القصائد</h2>
+      <span class="count" id="count">0 قصيدة</span>
+    </div>
+
+    <div class="poems" id="homePoems"></div>
+
+  </section>
+
+
+  <!-- صفحة جميع القصائد -->
+  <section id="poems" class="page">
+
+    <div class="section-title">
+      <h2>عناوين القصائد</h2>
+      <span class="count" id="allCount">0 قصيدة</span>
+    </div>
+
+    <div class="poems" id="allPoems"></div>
+
+  </section>
+
+
+  <!-- المفضلة -->
+  <section id="favorites" class="page">
+
+    <div class="section-title">
+      <h2>المفضلة</h2>
+      <span class="count">قصائدك المفضلة</span>
+    </div>
+
+    <div class="poems" id="favoritePoems"></div>
+
+  </section>
+
+
+  <!-- معلومات المنشئ -->
+  <section id="about" class="page">
+
+    <div class="section-title">
+      <h2>معلومات عن المنشئ</h2>
+    </div>
+
+    <div class="about-card">
+      <h3>منشئ الموقع</h3>
+      <br>
+      <p>
+        هذا الديوان الإلكتروني تم تصميمه ليكون واجهة بسيطة
+        وهادئة لعرض قصائد الشاعر ناصر الوبير بطريقة منظمة
+        وسهلة التصفح على الجوال.
+      </p>
+    </div>
+
+  </section>
+
+
+  <!-- التواصل -->
+  <section id="contact" class="page">
+
+    <div class="section-title">
+      <h2>تواصل مع المطور</h2>
+    </div>
+
+    <div class="contact">
+      <a href="https://wa.me/+967770318301" target="_blank">📱 واتساب</a>
+      <a href="https://instagram.com/hatem_vip3" target="_blank">📷 إنستغرام</a>
+      <a href="https://tiktok.com/@hatem_vip3" target="_blank">🎵 تيك توك</a>
+    </div>
+
+  </section>
+
+
+  <!-- عن ناصر الوبير -->
+  <section id="diwan" class="page">
+
+    <div class="section-title">
+      <h2>عن ناصر الوبير</h2>
+    </div>
+
+    <div class="about-card">
+      <h3>الشاعر ناصر الوبير</h3>
+      <br>
+      <p style="line-height: 2.2;">
+        ناصر الوبير هو شاعر قطري من مواليد عام 1990 يعتبر من الشخصيات المميزة على المستوى الأدبي، وله شهرة واسعة يحظى بها في منطقة الجزيرة العربية، والعالم العربي بشكل عام، حيث يعرف بأنه كاتب وشاعر شاب مشهور، أبدع في العديد من الدواوين والقصائد الشعرية المميزة، قد شارك عام 2012 في برنامج شاعر المليون، كما شارك في برنامج الشعر والشعراء، لما تميز به بالفصاحة والبلاغة والشجن في إلقاء القصائد الشعرية.
+      </p>
+    </div>
+
+  </section>
+
+</main>
+
+
+<!-- قارئ القصيدة -->
+<div class="reader" id="reader">
+
+  <div class="reader-top">
+    <button class="icon-btn" onclick="closeReader()">←</button>
+    <div class="reader-title" id="readerTopTitle">قراءة القصيدة</div>
+    <div class="reader-actions">
+      <button class="icon-btn" onclick="changeFont(-1)">A−</button>
+      <button class="icon-btn" onclick="changeFont(1)">A+</button>
+    </div>
+  </div>
+
+  <div class="reader-body">
+    <div class="reader-card">
+      <h1 id="readerTitle"></h1>
+      <div class="poem-text" id="poemText">النص الكامل للقصيدة يضاف هنا.</div>
+
+      <div class="reader-tools">
+        <button class="tool" onclick="changeFont(-1)">تصغير الخط</button>
+        <button class="tool" onclick="changeFont(1)">تكبير الخط</button>
+        <button class="tool" onclick="copyPoem()">نسخ</button>
+        <button class="tool" onclick="sharePoem()">مشاركة</button>
+        <button class="tool" onclick="speakPoem()">🔊 استماع</button>
+        <button class="tool" onclick="favoriteCurrent()" id="favoriteButton">♡ مفضلة</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ربط ملف القصائد الخارجي هنا -->
+<script src="poems.js"></script>
+
+<script>
+
+let currentPoem = null;
+let fontSize = 19;
+
+
+/* عرض القصائد */
+function renderPoems(list, elementId){
+  const container = document.getElementById(elementId);
+  if(!container) return;
+
+  if(list.length === 0){
+    container.innerHTML = `
+      <div class="empty">
+        لا توجد قصائد مطابقة.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = list.map((poem)=>`
+    <div class="poem-card">
+      <div class="poem-number">
+        ${poem.id}
+      </div>
+      <div class="poem-info">
+        <h3>${escapeHTML(poem.title)}</h3>
+        <p>قصيدة رقم ${poem.id}</p>
+      </div>
+      <button class="open-btn" onclick="openReader(${poem.id})">
+        قراءة
+      </button>
+    </div>
+  `).join("");
+}
+
+/* عرض كل الصفحات */
+function render(){
+  renderPoems(poems, "homePoems");
+  renderPoems(poems, "allPoems");
+  renderFavorites();
+  
+  const total = poems.length;
+  document.getElementById("count").textContent = total + " قصيدة";
+  document.getElementById("allCount").textContent = total + " قصيدة";
+}
+
+/* فتح القصيدة */
+function openReader(id){
+  const poem = poems.find(p => p.id === id);
+  if(!poem) return;
+
+  currentPoem = poem;
+
+  document.getElementById("readerTitle").textContent = poem.title;
+  document.getElementById("readerTopTitle").textContent = poem.title;
+
+  const text = poem.text && poem.text.trim() ? poem.text : "النص الكامل لهذه القصيدة غير متوفر حالياً.";
+  document.getElementById("poemText").textContent = text;
+
+  document.getElementById("reader").classList.add("show");
+  document.body.style.overflow = "hidden";
+
+  updateFavoriteButton();
+}
+
+/* إغلاق القصيدة */
+function closeReader(){
+  document.getElementById("reader").classList.remove("show");
+  document.body.style.overflow = "";
+}
+
+/* حجم الخط */
+function changeFont(amount){
+  fontSize += amount;
+  if(fontSize < 14) fontSize = 14;
+  if(fontSize > 32) fontSize = 32;
+  document.getElementById("poemText").style.fontSize = fontSize + "px";
+}
+
+/* المفضلة */
+function getFavorites(){
+  return JSON.parse(localStorage.getItem("nasserFavorites") || "[]");
+}
+
+function saveFavorites(list){
+  localStorage.setItem("nasserFavorites", JSON.stringify(list));
+}
+
+function favoriteCurrent(){
+  if(!currentPoem) return;
+  let favorites = getFavorites();
+
+  if(favorites.includes(currentPoem.id)){
+    favorites = favorites.filter(id => id !== currentPoem.id);
+  }else{
+    favorites.push(currentPoem.id);
+  }
+
+  saveFavorites(favorites);
+  updateFavoriteButton();
+  renderFavorites();
+}
+
+function updateFavoriteButton(){
+  const button = document.getElementById("favoriteButton");
+  if(!currentPoem) return;
+  const favorites = getFavorites();
+
+  if(favorites.includes(currentPoem.id)){
+    button.textContent = "♥ في المفضلة";
+  }else{
+    button.textContent = "♡ مفضلة";
+  }
+}
+
+function renderFavorites(){
+  const favorites = getFavorites();
+  const list = poems.filter(poem => favorites.includes(poem.id));
+  renderPoems(list, "favoritePoems");
+}
+
+/* البحث الشامل */
+function searchPoems(){
+  const value = document.getElementById("searchInput").value.trim().toLowerCase();
+
+  const result = poems.filter(poem =>
+    poem.title.toLowerCase().includes(value) ||
+    (poem.text && poem.text.toLowerCase().includes(value))
+  );
+
+  renderPoems(result, "homePoems");
+}
+
+/* نسخ */
+function copyPoem(){
+  if(!currentPoem) return;
+  const text = currentPoem.title + "\n\n" + (currentPoem.text || "النص غير متوفر");
+
+  navigator.clipboard.writeText(text)
+    .then(() => alert("تم نسخ القصيدة بنجاح"))
+    .catch(() => alert("تعذر النسخ"));
+}
+
+/* مشاركة */
+function sharePoem(){
+  if(!currentPoem) return;
+  const text = currentPoem.title + "\n\nديوان ناصر الوبير";
+
+  if(navigator.share){
+    navigator.share({ title: currentPoem.title, text: text });
+  }else{
+    navigator.clipboard.writeText(text);
+    alert("تم نسخ عنوان القصيدة للمشاركة");
+  }
+}
+
+/* تشغيل صوتي */
+function speakPoem(){
+  if(!currentPoem) return;
+  if(!("speechSynthesis" in window)){
+    alert("المتصفح لا يدعم الاستماع الصوتي");
+    return;
+  }
+
+  speechSynthesis.cancel();
+  const text = currentPoem.text || "النص غير متوفر";
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "ar-SA";
+  speech.rate = .85;
+  speech.pitch = 1;
+  speechSynthesis.speak(speech);
+}
+
+/* الوضع الليلي */
+function toggleDark(){
+  document.body.classList.toggle("dark");
+  const dark = document.body.classList.contains("dark");
+  localStorage.setItem("nasserDark", dark ? "1" : "0");
+}
+
+/* القائمة */
+function openDrawer(){
+  document.getElementById("drawer").classList.add("show");
+  document.getElementById("overlay").classList.add("show");
+}
+
+function closeDrawer(){
+  document.getElementById("drawer").classList.remove("show");
+  document.getElementById("overlay").classList.remove("show");
+}
+
+/* التنقل */
+function go(page){
+  closeDrawer();
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.getElementById(page);
+  if(target){
+    target.classList.add("active");
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* تحديث */
+function refreshPoems(){
+  render();
+  alert("تم تحديث قائمة القصائد");
+}
+
+/* حماية HTML */
+function escapeHTML(text){
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* استرجاع الوضع الليلي */
+if(localStorage.getItem("nasserDark") === "1"){
+  document.body.classList.add("dark");
+}
+
+/* تشغيل الموقع */
+render();
+
+</script>
+
+</body>
+</html>
